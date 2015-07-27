@@ -40,7 +40,7 @@ public class NetworkController {
     /**
      * Application Context
      */
-    private Context mContext;
+    private MainActivity mMainActivity;
     /**
      * Main thread Handler
      */
@@ -48,12 +48,12 @@ public class NetworkController {
 
     /**
      * Creates a new NetworkController that will have access to the application context and handler.
-     * @param context
+     * @param activity
      * @param handler
      */
-    NetworkController(Context context, Handler handler){
+    NetworkController(MainActivity activity, Handler handler){
 
-        mContext = context;
+        mMainActivity = activity;
         mHandler = handler;
 
     }
@@ -109,8 +109,14 @@ public class NetworkController {
                     String json = getHttpReply(3000, new URL("http://" + address.getHostName() + "/id"));
                     if (null != json) {
                         Log.d(TAG, json);
-                        TimerModel timer = new TimerModel(json);
+                        TimerModel timer = new TimerModel(json, address);
                         TimerModel.addTimer(timer);
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mMainActivity.updateDrawer();
+                            }
+                        });
                     }
                 } catch (IOException e) {
                     Log.e(TAG, e.toString(), e);

@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.httpeffectivemobilesolutions.timerinterface.R;
+import com.httpeffectivemobilesolutions.timerinterface.model.TimerModel;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -59,6 +60,7 @@ public class NavigationDrawerFragment extends Fragment {
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
+    private ArrayAdapter mAdapter;
 
     public NavigationDrawerFragment() {
     }
@@ -99,17 +101,19 @@ public class NavigationDrawerFragment extends Fragment {
                 selectItem(position);
             }
         });
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
+
+        mAdapter = new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                new String[]{
-                        getString(R.string.title_section1),
-                        getString(R.string.title_section2),
-                        getString(R.string.title_section3),
-                }));
+                android.R.id.text1, TimerModel.getTimers());
+
+        mDrawerListView.setAdapter(mAdapter);
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
+    }
+
+    public void UpdateList(){
+        mAdapter.notifyDataSetChanged();
     }
 
     public boolean isDrawerOpen() {

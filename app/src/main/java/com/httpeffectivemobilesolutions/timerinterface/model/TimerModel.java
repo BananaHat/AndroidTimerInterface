@@ -3,6 +3,7 @@ package com.httpeffectivemobilesolutions.timerinterface.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 
 /**
@@ -53,17 +54,29 @@ public class TimerModel {
      */
     int leftSec;
     /**
-     * tells ust the state of the relay 1 is on 0 is off.
+     * Tells ust the state of the relay 1 is on 0 is off.
      */
     int relayState;
-    String id, name;
+    /**
+     * Id of the timer. Hopefully we can make it a uuid.
+     */
+    String id;
+    /**
+     * Name of the timer, it can be set by the user.
+     */
+    String name;
+    /**
+     * Current ip address of the timer.
+     */
+    InetAddress address;
 
 
     /**
      * Creates a new Timer model from a JSON string.
      * @param jsonString
      */
-    public TimerModel(String jsonString){
+    public TimerModel(String jsonString, InetAddress address){
+        this.address = address;
         try {
             JSONObject json = new JSONObject(jsonString);
             JSONObject vars = json.getJSONObject("variables");
@@ -80,6 +93,13 @@ public class TimerModel {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
     /**
@@ -91,4 +111,9 @@ public class TimerModel {
             allTimers.add(timer);
         }
     }
+
+    public static ArrayList getTimers(){
+        return allTimers;
+    }
+
 }

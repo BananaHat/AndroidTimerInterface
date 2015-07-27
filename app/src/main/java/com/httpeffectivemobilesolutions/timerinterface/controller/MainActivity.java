@@ -1,13 +1,10 @@
 package com.httpeffectivemobilesolutions.timerinterface.controller;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
-import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -19,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.Toast;
 
 import com.httpeffectivemobilesolutions.timerinterface.R;
 import com.httpeffectivemobilesolutions.timerinterface.view.NavigationDrawerFragment;
@@ -123,6 +119,10 @@ public class MainActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public void updateDrawer(){
+        mNavigationDrawerFragment.UpdateList();
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -147,6 +147,8 @@ public class MainActivity extends ActionBarActivity
 
         public PlaceholderFragment() {
         }
+
+
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,

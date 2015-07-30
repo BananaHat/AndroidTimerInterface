@@ -109,7 +109,7 @@ public class NetworkController {
                     String json = getHttpReply(3000, new URL("http://" + address.getHostName() + "/id"));
                     if (null != json) {
                         Log.d(TAG, json);
-                        TimerModel timer = new TimerModel(json, address);
+                        TimerModel timer = new TimerModel(json, address, mHandler);
                         TimerModel.addTimer(timer);
                         mHandler.post(new Runnable() {
                             @Override

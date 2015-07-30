@@ -25,6 +25,9 @@ import android.widget.Toast;
 import com.httpeffectivemobilesolutions.timerinterface.R;
 import com.httpeffectivemobilesolutions.timerinterface.model.TimerModel;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
@@ -80,7 +83,7 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         // Select either the default item (0) or the last selected item.
-        selectItem(mCurrentSelectedPosition);
+        //selectItem(mCurrentSelectedPosition);
     }
 
     @Override
@@ -105,7 +108,7 @@ public class NavigationDrawerFragment extends Fragment {
         mAdapter = new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1, TimerModel.getTimers());
+                android.R.id.text1, TimerModel.getTimerNames());
 
         mDrawerListView.setAdapter(mAdapter);
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);

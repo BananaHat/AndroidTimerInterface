@@ -1,7 +1,6 @@
 package com.httpeffectivemobilesolutions.timerinterface.controller;
 
 
-import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
@@ -89,9 +88,8 @@ public class NetworkController {
                             });
                         }
                     }
-                } catch (SocketException e) {
-                    Log.e(TAG, e.toString(), e);
-                } catch (IOException e) {
+                    socket.close();
+                } catch (Exception e) {
                     Log.e(TAG, e.toString(), e);
                 }
             }
@@ -110,11 +108,11 @@ public class NetworkController {
                     if (null != json) {
                         Log.d(TAG, json);
                         TimerModel timer = new TimerModel(json, address, mHandler);
-                        TimerModel.addTimer(timer);
+                        TimerModel.addOrUpdateTimer(timer);
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                mMainActivity.updateDrawer();
+                                mMainActivity.update();
                             }
                         });
                     }
@@ -124,7 +122,32 @@ public class NetworkController {
             }
         }.start();
     }
-
+    /**]
+     * Adds a found timer;
+     * @param address
+     */
+    public void sendCommand(final InetAddress address, final String command){
+        new Thread(){
+            public void run() {
+                try {
+                    String json = getHttpReply(3000, new URL("http://" + address.getHostName()+ "/" + command));
+                    if (null != json) {
+                        Log.d(TAG, json);
+                        TimerModel timer = new TimerModel(json, address, mHandler);
+                        TimerModel.addOrUpdateTimer(timer);
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mMainActivity.update();
+                            }
+                        });
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, e.toString(), e);
+                }
+            }
+        }.start();
+    }
     /**
      * Makes an HTTP connection to the URL and returns the reply as a string.
      * @param timeout

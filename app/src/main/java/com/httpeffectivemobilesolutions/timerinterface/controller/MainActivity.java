@@ -1,20 +1,15 @@
 package com.httpeffectivemobilesolutions.timerinterface.controller;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.ServiceConnection;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 
 import com.httpeffectivemobilesolutions.timerinterface.R;
@@ -26,19 +21,33 @@ import com.httpeffectivemobilesolutions.timerinterface.view.TimerContentFragment
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
+    private static String TAG = MainActivity.class.getSimpleName();
+    private static String CONTENT_KEY = "CONTENT_KEY";
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
+    /**
+     * Fragment that shows the necessary data bout the selected timer
+     */
     private TimerContentFragment mTimerContentFragment;
-
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-
+    /**
+     *
+     */
     private NetworkController mNetworkController;
-    ServiceConnection mQueueConnection;
+    /**
+     *
+     */
+    private int mActiveTimer;
+
+    //**********************************************************************************************
+    // OVERRIDES
+    //*********************************************************************************************/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +67,7 @@ public class MainActivity extends ActionBarActivity
         wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         WifiManager.MulticastLock mLock = wifi.createMulticastLock("lock");
         mLock.acquire();
-        NetworkController mNetworkController = new NetworkController(this, new Handler());
+        mNetworkController = new NetworkController(this, new Handler());
         mNetworkController.broadcastListen(10000);
 
     }
@@ -66,21 +75,16 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
+        mActiveTimer = position;
         if(null == mTimerContentFragment) {
             mTimerContentFragment = new TimerContentFragment();
-            mTimerContentFragment.setTimer(TimerModel.getTimers().get(position));
+            //mTimerContentFragment.setTimer(TimerModel.getTimers().get(position));
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.container, mTimerContentFragment)
                     .commit();
         }
-    }
-
-    public void restoreActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
+        mTimerContentFragment.setTimer(TimerModel.getTimers().get(position));
     }
 
     @Override
@@ -111,49 +115,30 @@ public class MainActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-    public void updateDrawer(){
+    //**********************************************************************************************
+    // PUBLIC METHODS
+    //*********************************************************************************************/
+
+    public void update(){
         mNavigationDrawerFragment.UpdateList();
+        if(TimerModel.getTimers().size() > mActiveTimer && null != mTimerContentFragment) {
+            mTimerContentFragment.setTimer(TimerModel.getTimers().get(mActiveTimer));
+        }
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     *
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         *
-        private static final String ARG_SECTION_NUMBER = "section_number";
+    public NetworkController getNetworkController(){
+        return mNetworkController;
+    }
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         *
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
+    public void restoreActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setTitle(mTitle);
+    }
 
-        public PlaceholderFragment() {
-        }
-
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_content, container, false);
-            return rootView;
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
-        }
-    }*/
+    public void setTimerContentFragment(TimerContentFragment fragment){
+        mTimerContentFragment = fragment;
+    }
 
 }

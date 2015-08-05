@@ -8,6 +8,19 @@
 
     <string name="action_settings">Settings</string>
 
+    <string name="c_set_name">/setname?params=</string>
+    <string name="c_set_on">/seton?params=</string>
+    <string name="c_set_off">/setoff?params=</string>
+
+    <string name="set_on">Set On Time</string>
+    <string name="set_off">Set Off Time</string>
+    <string name="set_name">Set Timer Name</string>
+
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="time_Picker_error">Time must be at least one second!</string>
+
     <string name="relay_state">Relay State</string>
     <string name="time_left">Time Left in Cycle</string>
     <string name="on_time">On Time:</string>
